@@ -63,6 +63,27 @@ public final class ConfigFactory {
      * @return an object implementing the given interface, which maps methods to property values.
      */
     public static <T extends Config> T create(Class<? extends T> clazz, Map<?, ?>... imports) {
+        checkImports(imports);
+        return INSTANCE.create(clazz, imports);
+    }
+
+    /**
+     * Allows reconfiguration of a configuration implementation
+     * 
+     * @param clazz     the interface extending from {@link Config} that you want to instantiate.
+     * @param instance  the instance that need to be re/configured
+     * @param imports   additional variables to be used to resolve the properties.
+     * @param <T>       type of the interface.
+     * @return the instance passed in "instance"
+     * @since 1.0.10.METERIAN
+     */
+    public static <T extends Reconfigurable> T reconfigure(Class<? extends T> clazz, T instance, Map<?, ?>... imports) {
+        checkImports(imports);
+        return INSTANCE.reconfigure(clazz, instance, imports);
+    }
+
+
+    private static void checkImports(Map<?, ?>... imports) throws IllegalArgumentException {
         for( Map<?, ?> map : imports ){
             for( Object key : map.keySet() ){
                 if( key == null || map.get(key) == null){
@@ -70,7 +91,6 @@ public final class ConfigFactory {
                 }
             }
         }
-        return INSTANCE.create(clazz, imports);
     }
 
     /**

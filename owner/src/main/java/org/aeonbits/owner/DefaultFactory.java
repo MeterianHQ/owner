@@ -36,6 +36,15 @@ class DefaultFactory implements Factory {
         this.loadersManager = new LoadersManager();
     }
 
+    public <T extends Reconfigurable> T reconfigure(Class<? extends T> clazz, T instance, Map<?, ?>... imports) {
+        VariablesExpander expander = new VariablesExpander(props);
+        PropertiesManager manager = new PropertiesManager(clazz, new Properties(), scheduler, expander, loadersManager, imports);
+        Object jmxSupport = getJMXSupport(clazz, manager);
+        PropertiesInvocationHandler handler = new PropertiesInvocationHandler(manager, jmxSupport);
+        instance.reconfigure(new ReconfigurableStorage(handler, clazz));
+        return instance;
+    }
+
     @SuppressWarnings("unchecked")
     public <T extends Config> T create(Class<? extends T> clazz, Map<?, ?>... imports) {
         Class<?>[] interfaces = interfaces(clazz);

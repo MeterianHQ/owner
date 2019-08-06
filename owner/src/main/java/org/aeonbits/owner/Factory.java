@@ -33,6 +33,18 @@ public interface Factory {
     <T extends Config> T create(Class<? extends T> clazz, Map<?, ?>... imports);
 
     /**
+     * Allows reconfiguration of a configuration implementation
+     * 
+     * @param clazz     the interface extending from {@link Config} that you want to instantiate.
+     * @param instance  the instance that need to be re/configured
+     * @param imports   additional variables to be used to resolve the properties.
+     * @param <T>       type of the interface.
+     * @return the instance passed in "instance"
+     * @since 1.0.10.METERIAN
+     */
+    <T extends Reconfigurable> T reconfigure(Class<? extends T> clazz, T instance, Map<?, ?>... imports);
+
+    /**
      * Returns the value for a given property.
      *
      * @param key the key for the property
