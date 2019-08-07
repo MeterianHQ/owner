@@ -1,26 +1,21 @@
 OWNER
 =====
 
-OWNER, an API to ease Java property files usage.
+OWNER, an API to ease Java property files usage. This is a fork: please consider 
+a documentation to the [original project](https://github.com/lviggiano/owner/releases).
 
-[![Build Status](https://travis-ci.org/lviggiano/owner.png?branch=master)](https://travis-ci.org/lviggiano/owner)
-[![Coverage Status](https://coveralls.io/repos/lviggiano/owner/badge.png)](https://coveralls.io/r/lviggiano/owner)
-[![security status](https://www.meterian.com/badge/gh/lviggiano/owner/security)](https://www.meterian.com/report/gh/lviggiano/owner)
-[![stability status](https://www.meterian.com/badge/gh/lviggiano/owner/stability)](https://www.meterian.com/report/gh/lviggiano/owner)
-[![Built with Maven](http://maven.apache.org/images/logos/maven-feather.png)](http://maven.apache.org)
 
-DONATIONS
----------
+ABOUT THIS FORK
+---------------
 
-Your support, is the acknowledgment of the value of this work and helps it running and improving.
-Donations are welcome.
+This is a fork from the original repository that was created because, when used 
+in a natively compiled application, it won't work due to the usage of dynamic
+proxies. Because of that, this version introduces the ability to provide the 
+factory with an implementation, which itself can use some semi-magic methods
+to collect the values respecting the conventions of the library as defined in 
+the interface.
 
-![Donate bitcoin:1DARNDYjjKhNF8j2DFwT3zrtUsMQvV2am1](http://i.imgur.com/BC7sVAG.png)  
-bitcoin:1DARNDYjjKhNF8j2DFwT3zrtUsMQvV2am1
-
-[![Donate with PayPal](https://www.paypalobjects.com/webstatic/en_US/i/btn/png/gold-rect-paypal-26px.png)](https://www.paypal.me/lviggiano)
-
-Thank you!
+The implementation is found in the branch [1.0.10.METERIAN](https://github.com/MeterianHQ/owner/tree/1.0.10.METERIAN), it packages to version 1.0.10.METERIAN. To understand how this works please [see the tests](https://github.com/MeterianHQ/owner/tree/1.0.10.METERIAN/owner/src/test/java/org/aeonbits/owner/reconfigure)
 
 
 INTRODUCTION
