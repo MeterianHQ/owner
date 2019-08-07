@@ -7,7 +7,6 @@ import java.net.URL;
 import java.util.List;
 import java.util.Set;
 
-
 public class ReconfigurableStorage {
     
     private PropertiesInvocationHandler handler;
@@ -20,9 +19,13 @@ public class ReconfigurableStorage {
 
     public Object getObject() {
         String methodName = Thread.currentThread() 
-                .getStackTrace()[3] 
-                .getMethodName(); 
+            .getStackTrace()[3] 
+            .getMethodName(); 
     
+        return getObject(methodName);
+    }
+
+    public Object getObject(String methodName) throws RuntimeException {
         try {
             Method method = iface.getMethod(methodName, new Class<?>[]{});
             Object res = handler.resolveProperty(method);
@@ -42,15 +45,6 @@ public class ReconfigurableStorage {
 
     public Integer getInteger() {
         return safeCast(getObject(), Integer.class);
-    }
-
-    @SuppressWarnings("unchecked")
-    private <T> T safeCast(Object res, Class<T> clazz) {
-        try {
-            return (T) res;
-        } catch (ClassCastException ex) {
-            throw new RuntimeException("Cannot resolve configuration value to class "+clazz+" - real class: "+res.getClass());
-        }
     }
 
     public File getFile() {
@@ -90,6 +84,15 @@ public class ReconfigurableStorage {
 
     public Double getDouble() {
         return safeCast(getObject(), Double.class);
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> T safeCast(Object res, Class<T> clazz) {
+        try {
+            return (T) res;
+        } catch (ClassCastException ex) {
+            throw new RuntimeException("Cannot resolve configuration value to class "+clazz+" - real class: "+res.getClass());
+        }
     }
 
 }

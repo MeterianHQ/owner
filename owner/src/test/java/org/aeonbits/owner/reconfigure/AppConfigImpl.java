@@ -11,7 +11,7 @@ import org.aeonbits.owner.ReconfigurableStorage;
 
 public class AppConfigImpl implements AppConfig, Reconfigurable {
    
-    private ReconfigurableStorage storage;
+    ReconfigurableStorage storage;
 
     @Override
     public void reconfigure(ReconfigurableStorage storage) {

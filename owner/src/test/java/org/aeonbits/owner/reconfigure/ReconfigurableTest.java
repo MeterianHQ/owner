@@ -76,6 +76,11 @@ public class ReconfigurableTest {
         assertEquals(12.25, config().getSimpleDouble(), 0.0);
     }
     
+    @Test
+    public void shouldLoadObjectByMethodNameFromStorafe() throws Exception {
+        assertEquals("www", ((AppConfigImpl)config()).storage.getObject("getSimpleString"));
+    }
+    
     private AppConfig config(String... params) {
         Properties properties = new Properties();
         for (int i=0; i<params.length; i+=2)
