@@ -41,7 +41,7 @@ class DefaultFactory implements Factory {
         PropertiesManager manager = new PropertiesManager(clazz, new Properties(), scheduler, expander, loadersManager, imports);
         Object jmxSupport = getJMXSupport(clazz, manager);
         PropertiesInvocationHandler handler = new PropertiesInvocationHandler(manager, jmxSupport);
-        instance.reconfigure(new ReconfigurableStorage(handler, clazz));
+        instance.reconfigure(new ReconfigurableStorage(handler, clazz, instance));
         return instance;
     }
 

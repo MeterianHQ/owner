@@ -9,19 +9,27 @@ import java.util.Set;
 
 public class ReconfigurableStorage {
     
-    private PropertiesInvocationHandler handler;
-    private Class<? extends Config> iface;
+    private final PropertiesInvocationHandler handler;
+    private final Class<? extends Config> iface;
+    private final String instanceClassName;
 
-    public ReconfigurableStorage(PropertiesInvocationHandler propertiesHandler, Class<? extends Config> intface) {
+    public ReconfigurableStorage(PropertiesInvocationHandler propertiesHandler, Class<? extends Config> theInterface, Object theInstance) {
         this.handler = propertiesHandler;
-        this.iface = intface;
+        this.iface = theInterface;
+        this.instanceClassName = theInstance.getClass().getName();
     }
 
     public Object getObject() {
-        String methodName = Thread.currentThread() 
-            .getStackTrace()[3] 
-            .getMethodName(); 
-    
+        String methodName = null;
+        StackTraceElement[] traces = Thread.currentThread().getStackTrace();
+        for (StackTraceElement trace : traces) {
+            if (trace.getClassName() .equals(instanceClassName))
+                methodName = trace.getMethodName();
+        }
+        
+        if (methodName == null)
+            throw new RuntimeException("Unexpedted: cannot find any valid mthod name for this request!");
+        
         return getObject(methodName);
     }
 
