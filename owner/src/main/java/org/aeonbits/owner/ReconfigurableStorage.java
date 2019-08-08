@@ -5,10 +5,15 @@ import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URL;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ReconfigurableStorage {
     
+    private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+
     private final PropertiesInvocationHandler handler;
     private final Class<? extends Config> iface;
     private final String instanceClassName;
@@ -34,12 +39,33 @@ public class ReconfigurableStorage {
     }
 
     public Object getObject(String methodName) throws RuntimeException {
+        
+        Method method = null;
+        Object res = null;
         try {
-            Method method = iface.getMethod(methodName, new Class<?>[]{});
-            Object res = handler.resolveProperty(method);
-            return res;
+            method = iface.getMethod(methodName, new Class<?>[]{});
+            res = handler.resolveProperty(method);
         } catch (Exception any) {
-            throw new RuntimeException("Cannot resolve configuration value for method "+methodName);
+            logRequest(methodName, method, res);
+            throw new RuntimeException("Cannot resolve configuration value for method "+methodName, any);
+        }
+        
+        return res;
+    }
+
+    private void logRequest(String methodName, Method method, Object res) throws SecurityException {
+        if (LOGGER.isLoggable(Level.FINE)) {
+            StringBuffer sb = new StringBuffer();
+            sb.append('\n');
+            sb.append(String.format("\nMethodName: [%s]", methodName));
+            sb.append(String.format("\nMethod: [%s]", (method == null) ? "null" : method.toGenericString()));
+            sb.append(String.format("\nResult: [%s]", Objects.toString(res)));
+            sb.append(String.format("\nInterface: [%s]", Objects.toString(iface)));
+            for (Method m : iface.getMethods())
+                sb.append(String.format("\n- [%s]", (m== null) ? "null" : m.toGenericString()));
+            sb.append('\n');
+   
+            LOGGER.info(sb.toString());
         }
     }
 
@@ -102,5 +128,4 @@ public class ReconfigurableStorage {
             throw new RuntimeException("Cannot resolve configuration value to class "+clazz+" - real class: "+res.getClass());
         }
     }
-
 }
