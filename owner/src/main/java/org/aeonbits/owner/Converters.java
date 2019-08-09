@@ -19,6 +19,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Logger;
 
 import static java.lang.reflect.Modifier.isStatic;
 import static org.aeonbits.owner.Converters.SpecialValue.NULL;
@@ -34,7 +35,7 @@ import static org.aeonbits.owner.util.Reflection.isClassAvailable;
  * @author Luigi R. Viggiano
  */
 enum Converters {
-
+    
     ARRAY {
         @Override
         Object tryConvert(Method targetMethod, Class<?> targetType, String text) {
@@ -162,7 +163,7 @@ enum Converters {
         }
 
         private boolean isPropertyEditorDisabled() {
-            return Boolean.getBoolean("org.aeonbits.owner.property.editor.disabled");
+            return IS_PROPERTY_EDITOR_DISABLED;
         }
     },
 
@@ -248,6 +249,17 @@ enum Converters {
             throw unsupportedConversion(targetType, text);
         }
     };
+
+    private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+
+    private static boolean IS_PROPERTY_EDITOR_DISABLED = Boolean.getBoolean("org.aeonbits.owner.property.editor.disabled");
+    static {
+        PropertyEditor editor = PropertyEditorManager.findEditor(String.class);
+        if (editor == null) {
+            IS_PROPERTY_EDITOR_DISABLED = true;
+            LOGGER.fine("property editor disabled as it's not available in this VM / configuration");
+        }
+    }
 
     private static Object convertWithConverterClass(Method targetMethod, String text, Class<? extends Converter> converterClass) {
         Converter<?> converter;
